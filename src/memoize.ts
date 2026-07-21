@@ -33,34 +33,28 @@ type Args4<T> = T extends (
   : never;
 
 function uncurry2<A, B, R>(fn: (a: A) => (b: B) => R) {
-  return (a: A, b: B) => fn(a)(b);
+  return (a: A, b: B) => { throw new Error("STUB"); };
 }
 
 function uncurry3<A, B, C, R>(fn: (a: A) => (b: B) => (c: C) => R) {
-  return (a: A, b: B, c: C) => fn(a)(b)(c);
+    throw new Error("STUB");
 }
 
 function uncurry4<A, B, C, D, R>(
   fn: (a: A) => (b: B) => (c: C) => (d: D) => R
 ) {
-  return (a: A, b: B, c: C, d: D) => fn(a)(b)(c)(d);
+  return (a: A, b: B, c: C, d: D) => { throw new Error("STUB"); };
 }
 
 export function memoize2<T extends Fn>(fn: T): T {
   type A = Args2<T>[0];
   type B = Args2<T>[1];
 
-  return uncurry2(memoize((a: A) => memoize((b: B) => fn(a, b)))) as T;
+  return uncurry2(memoize((a: A) => { throw new Error("STUB"); })) as T;
 }
 
 export function memoize3<T extends Fn>(fn: T): T {
-  type A = Args3<T>[0];
-  type B = Args3<T>[1];
-  type C = Args3<T>[2];
-
-  return uncurry3(
-    memoize((a: A) => memoize((b: B) => memoize((c: C) => fn(a, b, c))))
-  ) as T;
+    throw new Error("STUB");
 }
 
 export function memoize4<T extends Fn>(fn: T): T {
@@ -71,7 +65,7 @@ export function memoize4<T extends Fn>(fn: T): T {
 
   return uncurry4(
     memoize((a: A) =>
-      memoize((b: B) => memoize((c: C) => memoize((d: D) => fn(a, b, c, d))))
+      { throw new Error("STUB"); }
     )
   ) as T;
 }

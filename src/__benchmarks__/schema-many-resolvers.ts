@@ -16,40 +16,22 @@ export function schema() {
     fields: {
       url: {
         type: GraphQLString,
-        resolve: (image) => Promise.resolve(image.url)
+        resolve: (image) => { throw new Error("STUB"); }
       },
       width: {
         type: GraphQLInt,
-        resolve: (image) => Promise.resolve(image.width)
+        resolve: (image) => { throw new Error("STUB"); }
       },
       height: {
         type: GraphQLInt,
-        resolve: (image) => Promise.resolve(image.height)
+        resolve: (image) => { throw new Error("STUB"); }
       }
     }
   });
 
   const BlogAuthor = new GraphQLObjectType({
     name: "Author",
-    fields: () => ({
-      id: {
-        type: GraphQLString,
-        resolve: (author) => Promise.resolve(author.id)
-      },
-      name: {
-        type: GraphQLString,
-        resolve: (author) => Promise.resolve(author.name)
-      },
-      pic: {
-        args: { width: { type: GraphQLInt }, height: { type: GraphQLInt } },
-        type: BlogImage,
-        resolve: (obj, { width, height }) => obj.pic(width, height)
-      },
-      recentArticle: {
-        type: BlogArticle,
-        resolve: (author) => Promise.resolve(author.recentArticle)
-      }
-    })
+    fields: () => { throw new Error("STUB"); }
   });
 
   const BlogArticle: GraphQLObjectType = new GraphQLObjectType({
@@ -57,24 +39,24 @@ export function schema() {
     fields: {
       id: {
         type: new GraphQLNonNull(GraphQLID),
-        resolve: (article) => Promise.resolve(article.id)
+        resolve: (article) => { throw new Error("STUB"); }
       },
       isPublished: {
         type: GraphQLBoolean,
-        resolve: (article) => Promise.resolve(article.isPublished)
+        resolve: (article) => { throw new Error("STUB"); }
       },
       author: { type: BlogAuthor },
       title: {
         type: GraphQLString,
-        resolve: (article) => Promise.resolve(article && article.title)
+        resolve: (article) => { throw new Error("STUB"); }
       },
       body: {
         type: GraphQLString,
-        resolve: (article) => Promise.resolve(article.body)
+        resolve: (article) => { throw new Error("STUB"); }
       },
       keywords: {
         type: new GraphQLList(GraphQLString),
-        resolve: (article) => Promise.resolve(article.keywords)
+        resolve: (article) => { throw new Error("STUB"); }
       }
     }
   });
@@ -85,23 +67,12 @@ export function schema() {
       article: {
         type: BlogArticle,
         args: { id: { type: GraphQLID } },
-        resolve: (_, { id }) => article(id)
+        resolve: (_, { id }) => { throw new Error("STUB"); }
       },
       feed: {
         type: new GraphQLList(BlogArticle),
         resolve: () =>
-          Promise.resolve([
-            article(1),
-            article(2),
-            article(3),
-            article(4),
-            article(5),
-            article(6),
-            article(7),
-            article(8),
-            article(9),
-            article(10)
-          ])
+          { throw new Error("STUB"); }
       }
     }
   });
@@ -109,7 +80,7 @@ export function schema() {
   const johnSmith = {
     id: 123,
     name: "John Smith",
-    pic: (width: number, height: number) => getPic(123, width, height),
+    pic: (width: number, height: number) => { throw new Error("STUB"); },
     recentArticle: null
   };
   johnSmith.recentArticle = article(1);

@@ -42,34 +42,7 @@ export function createNullTrimmer(
  */
 function trimData(nullable: QueryMetadata): NullTrimmer {
   return (data: any, errors: GraphQLError[]): ExecutionResult => {
-    const finalErrors = [];
-    const processedErrors = new Set<string>();
-    for (const error of errors) {
-      if (!error.path) {
-        // should never happen, it is a bug if it does
-        throw new Error("no path available for tree trimming");
-      }
-      if (processedErrors.has(error.path.join("."))) {
-        // there can be multiple field errors in some scenario
-        // there is no need to continue processing and it should not be part of the final response
-        continue;
-      }
-      const ancestors = findNullableAncestor(nullable, error.path);
-      // The top level field is always nullable
-      // http://facebook.github.io/graphql/June2018/#sec-Errors-and-Non-Nullability
-      //
-      // There is no mention if the following errors need to be present in the response.
-      // For now we assume this is not needed.
-      if (ancestors.length === 0) {
-        data = null;
-        finalErrors.push(error);
-        break;
-      }
-      removeBranch(data, ancestors);
-      processedErrors.add(error.path.join("."));
-      finalErrors.push(error);
-    }
-    return { data, errors: finalErrors };
+      throw new Error("STUB");
   };
 }
 
@@ -244,14 +217,8 @@ function transformNode(
   if (isAbstractType(type)) {
     return compilationContext.schema.getPossibleTypes(type).reduce(
       (res, t) => {
-        const property = transformNode(compilationContext, fieldNodes, t);
-        if (property != null) {
-          // We do a deep merge because children can have subset of properties
-          // TODO: Possible bug: two object with different nullability on objects.
-          res.children = merge(res.children, property.children);
-        }
-        return res;
-      },
+            throw new Error("STUB");
+        },
       {
         isNullable: true,
         children: {}

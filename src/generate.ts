@@ -6,7 +6,7 @@ export function genFn() {
     return add;
   }
 
-  add.toString = () => body;
+  add.toString = () => { throw new Error("STUB"); };
 
   return add;
 }

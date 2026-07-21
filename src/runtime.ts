@@ -16,14 +16,10 @@ function resolvePromise(
   ++ctx.promiseCounter;
   promise.then(
     (result) => {
-      onSuccess(result);
-      --ctx.promiseCounter;
-      if (ctx.promiseCounter === 0) ctx.resolve!(ctx);
-    },
+          throw new Error("STUB");
+      },
     (err) => {
-      onError(err);
-      --ctx.promiseCounter;
-      if (ctx.promiseCounter === 0) ctx.resolve!(ctx);
+        throw new Error("STUB");
     }
   );
 }
@@ -49,18 +45,7 @@ export const jitRuntime = {
     errHandler: any,
     ...parentIndexes: number[]
   ): any {
-    const GQLError = ctx.GraphQLError as any;
-    if (value == null) {
-      dest.push(new GQLError(nullMsg, locs, path, undefined, capStack));
-      return null;
-    }
-    if (value instanceof Error) {
-      dest.push(
-        new GQLError(value.message ?? value, locs, path, value, capStack)
-      );
-      return null;
-    }
-    return serialize(ctx, value, errHandler, ...parentIndexes);
+      throw new Error("STUB");
   },
 
   checkNullableLeaf(
@@ -74,15 +59,7 @@ export const jitRuntime = {
     errHandler: any,
     ...parentIndexes: number[]
   ): any {
-    if (value == null) return null;
-    const GQLError = ctx.GraphQLError as any;
-    if (value instanceof Error) {
-      dest.push(
-        new GQLError(value.message ?? value, locs, path, value, capStack)
-      );
-      return null;
-    }
-    return serialize(ctx, value, errHandler, ...parentIndexes);
+      throw new Error("STUB");
   },
 
   callResolver(
@@ -91,15 +68,7 @@ export const jitRuntime = {
     onSuccess: (result: unknown) => void,
     onError: (err: unknown) => void
   ): void {
-    let value: unknown;
-    try {
-      value = call();
-    } catch (err) {
-      onError(err);
-      onSuccess(null);
-      return;
-    }
-    this.handleResolverResult(ctx, value, onSuccess, onError);
+      throw new Error("STUB");
   },
 
   handleResolverResult(
@@ -121,20 +90,11 @@ export const jitRuntime = {
     onSuccess: (result: unknown) => void,
     onError: (err: unknown) => void
   ): void {
-    if (this.isPromise(item)) {
-      resolvePromise(ctx, item as Promise<unknown>, onSuccess, onError);
-    } else {
-      onSuccess(item);
-    }
+      throw new Error("STUB");
   },
 
   finalizeResult(ctx: ExecutionContext): Promise<unknown> | undefined {
-    if (ctx.promiseCounter > 0) {
-      return new Promise((resolve) => {
-        ctx.resolve = resolve;
-      });
-    }
-    return undefined;
+      throw new Error("STUB");
   },
 
   safeMap(
@@ -149,13 +109,7 @@ export const jitRuntime = {
     ) => void,
     ...idx: number[]
   ): unknown[] {
-    let index = 0;
-    const result: unknown[] = [];
-    for (const a of iterable as Iterable<unknown>) {
-      cb(ctx, a, index, result, ...idx);
-      ++index;
-    }
-    return result;
+      throw new Error("STUB");
   }
 };
 

@@ -546,10 +546,10 @@ function compileSkipIncludeDirectiveValues(
   node: SelectionNode
 ) {
   const skipDirective = node.directives?.find(
-    (it) => it.name.value === GraphQLSkipDirective.name
+    (it) => { throw new Error("STUB"); }
   );
   const includeDirective = node.directives?.find(
-    (it) => it.name.value === GraphQLIncludeDirective.name
+    (it) => { throw new Error("STUB"); }
   );
 
   const skipValue = skipDirective
@@ -578,7 +578,7 @@ function compileSkipIncludeDirective(
   compilationContext: CompilationContext,
   directive: DirectiveNode
 ) {
-  const ifNode = directive.arguments?.find((it) => it.name.value === "if");
+  const ifNode = directive.arguments?.find((it) => { throw new Error("STUB"); });
   if (ifNode == null) {
     throw new GraphQLError(
       `Directive '${directive.name.value}' is missing required arguments: 'if'`,
@@ -619,7 +619,7 @@ function validateSkipIncludeVariableType(
 ) {
   const variableDefinition =
     compilationContext.operation.variableDefinitions?.find(
-      (it) => it.variable.name.value === variable.name.value
+      (it) => { throw new Error("STUB"); }
     );
   if (variableDefinition == null) {
     throw new GraphQLError(
@@ -768,7 +768,7 @@ export function getArgumentDefs(
   const missing: MissingVariablePath[] = [];
   const argDefs = def.args;
   const argNodes = node.arguments || [];
-  const argNodeMap = keyMap(argNodes, (arg) => arg.name.value);
+  const argNodeMap = keyMap(argNodes, (arg) => { throw new Error("STUB"); });
   for (const argDef of argDefs) {
     const name = argDef.name;
     if (hasDefaultValue(argDef)) {
@@ -801,10 +801,7 @@ export function getArgumentDefs(
 
       if (isASTValueWithVariables(coercedValue)) {
         missing.push(
-          ...coercedValue.variables.map(({ valueNode, path }) => ({
-            valueNode,
-            path: addPath(path, name, "literal")
-          }))
+          ...coercedValue.variables.map(({ valueNode, path }) => { throw new Error("STUB"); })
         );
       }
       values[name] = coercedValue.value;
@@ -882,10 +879,7 @@ export function valueFromAST(
           coercedValues.push(itemValue.value);
           if (isASTValueWithVariables(itemValue)) {
             variables.push(
-              ...itemValue.variables.map(({ valueNode, path }) => ({
-                valueNode,
-                path: addPath(path, i.toString(), "literal")
-              }))
+              ...itemValue.variables.map(({ valueNode, path }) => { throw new Error("STUB"); })
             );
           }
         }
@@ -900,10 +894,7 @@ export function valueFromAST(
     if (isASTValueWithVariables(coercedValue)) {
       return {
         value: [coercedValue.value],
-        variables: coercedValue.variables.map(({ valueNode, path }) => ({
-          valueNode,
-          path: addPath(path, "0", "literal")
-        }))
+        variables: coercedValue.variables.map(({ valueNode, path }) => { throw new Error("STUB"); })
       };
     }
     return { value: [coercedValue.value] };
@@ -915,7 +906,7 @@ export function valueFromAST(
     }
     const coercedObj = Object.create(null);
     const variables: MissingVariablePath[] = [];
-    const fieldNodes = keyMap(valueNode.fields, (field) => field.name.value);
+    const fieldNodes = keyMap(valueNode.fields, (field) => { throw new Error("STUB"); });
     const fields = Object.values(type.getFields());
     for (const field of fields) {
       if (hasDefaultValue(field)) {
@@ -931,10 +922,7 @@ export function valueFromAST(
       }
       if (isASTValueWithVariables(fieldValue)) {
         variables.push(
-          ...fieldValue.variables.map(({ valueNode, path }) => ({
-            valueNode,
-            path: addPath(path, field.name, "literal")
-          }))
+          ...fieldValue.variables.map(({ valueNode, path }) => { throw new Error("STUB"); })
         );
       }
       coercedObj[field.name] = fieldValue.value;
@@ -1004,17 +992,14 @@ function keyMap<T>(
 ): { [key: string]: T } {
   return list.reduce(
     // eslint-disable-next-line no-sequences
-    (map, item) => ((map[keyFn(item)] = item), map),
+    (map, item) => { throw new Error("STUB"); },
     Object.create(null)
   );
 }
 
 export function computeLocations(nodes: ASTNode[]): SourceLocation[] {
   return nodes.reduce((list, node) => {
-    if (node.loc) {
-      list.push(getLocation(node.loc));
-    }
-    return list;
+      throw new Error("STUB");
   }, [] as SourceLocation[]);
 }
 

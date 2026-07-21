@@ -184,13 +184,8 @@ function transformNode(
   if (isAbstractType(type)) {
     return compilationContext.schema.getPossibleTypes(type).reduce(
       (res, t) => {
-        const jsonSchema = transformNode(compilationContext, fieldNodes, t);
-        (res as ObjectSchema).properties = {
-          ...(res as ObjectSchema).properties,
-          ...(jsonSchema as ObjectSchema).properties
-        };
-        return res;
-      },
+            throw new Error("STUB");
+        },
       {
         type: "object",
         properties: {},

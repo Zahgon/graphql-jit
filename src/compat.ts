@@ -55,11 +55,7 @@ export function getOperationRootType(
  * v17 does have .toJSON and doesn't have "formatError" export anymore
  */
 export function formatError(error: GraphQLError): GraphQLFormattedError {
-  if (versionInfo.major < 16) {
-    return (errorUtilities as any).formatError(error);
-  }
-
-  return (error as any).toJSON();
+    throw new Error("STUB");
 }
 
 /**

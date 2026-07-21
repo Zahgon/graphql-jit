@@ -373,38 +373,8 @@ export function createBoundQuery(
       context: any,
       variables: Maybe<{ [key: string]: any }>
     ): Promise<ExecutionResult> | ExecutionResult {
-      // this can be shared across in a batch request
-      const parsedVariables = getVariableValues(variables || {});
-
-      // Return early errors if variable coercing failed.
-      if (failToParseVariables(parsedVariables)) {
-        return { errors: parsedVariables.errors };
+          throw new Error("STUB");
       }
-      const executionContext: ExecutionContext = {
-        rootValue,
-        context,
-        variables: parsedVariables.coerced,
-        inspect,
-        GraphQLError: GraphqlJitError,
-        resolvers,
-        typeResolvers,
-        isTypeOfs,
-        serializers,
-        resolveInfos,
-        trimmer,
-        rt: jitRuntime,
-        promiseCounter: 0,
-        data: {},
-        nullErrors: [],
-        errors: []
-      };
-      // eslint-disable-next-line no-useless-call
-      const result = func.call(null, executionContext);
-      if (isPromise(result)) {
-        return result.then(postProcessResult);
-      }
-      return postProcessResult(executionContext);
-    }
   };
 
   return ret[fnName];
@@ -512,10 +482,7 @@ function compileOperation(
 function compileDeferredFields(context: CompilationContext): string {
   let body = "";
   context.deferred.forEach((deferredField, index) => {
-    body += `
-      if (${SAFETY_CHECK_PREFIX}${index}) {
-        ${compileDeferredField(context, deferredField)}
-      }`;
+      throw new Error("STUB");
   });
   return body;
 }
@@ -615,27 +582,7 @@ function compileDeferredField(
 function compileDeferredFieldsSerially(context: CompilationContext): string {
   let body = "";
   context.deferred.forEach((deferredField, index) => {
-    const { name, fieldName, parentType } = deferredField;
-    const resolverName = getResolverName(parentType.name, fieldName);
-    const mutationHandler = getHoistedFunctionName(
-      context,
-      `${name}${resolverName}Mutation`
-    );
-    body += `
-      if (${SAFETY_CHECK_PREFIX}${index}) {
-        ${GLOBAL_EXECUTION_CONTEXT}.queue.push(${mutationHandler});
-      }
-    `;
-    const appendix = `
-    if (${GLOBAL_PROMISE_COUNTER} === 0) {
-      ${GLOBAL_RESOLVE}(${GLOBAL_EXECUTION_CONTEXT});
-    }
-    `;
-    context.hoistedFunctions.push(`
-      function ${mutationHandler}(${GLOBAL_EXECUTION_CONTEXT}) {
-        ${compileDeferredField(context, deferredField, appendix)}
-      }
-      `);
+      throw new Error("STUB");
   });
   return body;
 }
@@ -942,19 +889,14 @@ function compileObjectType(
     const fieldConditionsList = (
       context.options.useExperimentalPathBasedSkipInclude
         ? fieldNodes.map(
-            (it) => it.__internalShouldIncludePath?.[serializedResponsePath]
+            (it) => { throw new Error("STUB"); }
           )
-        : fieldNodes.map((it) => it.__internalShouldInclude)
+        : fieldNodes.map((it) => { throw new Error("STUB"); })
     ).filter(isNotNull);
 
     let fieldCondition = fieldConditionsList
       .map((it) => {
-        if (it.length > 0) {
-          return `(${it.join(" && ")})`;
-        }
-        // default: if there are no conditions, it means that the field
-        // is always included in the path
-        return "true";
+          throw new Error("STUB");
       })
       .filter(isNotNull)
       .join(" || ");
@@ -968,7 +910,7 @@ function compileObjectType(
 
     const alwaysIncluded = fieldCondition
       .split(" || ")
-      .every((p) => p === "true");
+      .every((p) => { throw new Error("STUB"); });
 
     if (!alwaysIncluded) {
       body(`(${fieldCondition})`);
@@ -987,7 +929,7 @@ function compileObjectType(
     let resolver = field.resolve;
     if (!resolver && alwaysDefer) {
       const fieldName = field.name;
-      resolver = (parent) => parent && parent[fieldName];
+      resolver = (parent) => { throw new Error("STUB"); };
     }
     if (resolver) {
       context.deferred.push({
@@ -1054,7 +996,7 @@ function compileAbstractType(
     resolveType = type.resolveType;
   } else {
     resolveType = (value: any, context: any, info: GraphQLResolveInfo) =>
-      defaultResolveTypeFn(value, context, info, type);
+      { throw new Error("STUB"); };
   }
   const typeResolverName = getTypeResolverName(type.name);
   context.typeResolvers[typeResolverName] = resolveType;
@@ -1097,12 +1039,8 @@ function compileAbstractType(
 
   const trivialCases = Array.from(trivialGroups.entries()).map(
     ([sharedObj, typeNames]) => {
-      const caseLabels = typeNames.map((n) => `case "${n}"`).join(": ");
-      return `${caseLabels}: {
-          const __concrete = ${sharedObj};
-          return __concrete;
-      }`;
-    }
+          throw new Error("STUB");
+      }
   );
 
   const collectedTypes = [...nonTrivialCases, ...trivialCases].join("\n");
@@ -1270,23 +1208,7 @@ const MAGIC_NAN = "__MAGIC_NAN__57f286b9_4c20_487f_b409_79804ddcb4f8";
 const MAGIC_DATE = "__MAGIC_DATE__33a9e76d_02e0_4128_8e92_3530ad3da74d";
 
 function specialValueReplacer(this: any, key: any, value: any) {
-  if (Number.isNaN(value)) {
-    return MAGIC_NAN;
-  }
-
-  if (value === Infinity) {
-    return MAGIC_PLUS_INFINITY;
-  }
-
-  if (value === -Infinity) {
-    return MAGIC_MINUS_INFINITY;
-  }
-
-  if (this[key] instanceof Date) {
-    return MAGIC_DATE + this[key].getTime();
-  }
-
-  return value;
+    throw new Error("STUB");
 }
 
 function objectStringify(val: any): string {
@@ -1450,9 +1372,7 @@ function generateUniqueDeclarations(
 ) {
   return context.deferred
     .map(
-      (_, idx) => `
-        let ${SAFETY_CHECK_PREFIX}${idx} = ${defaultValue};
-      `
+      (_, idx) => { throw new Error("STUB"); }
     )
     .join("\n");
 }
@@ -1472,7 +1392,7 @@ export function isPromise(value: any): value is Promise<any> {
 }
 
 export function isPromiseInliner(value: string): string {
-  return `${GLOBAL_RUNTIME_NAME}.isPromise(${value})`;
+    throw new Error("STUB");
 }
 
 /**
@@ -1504,7 +1424,7 @@ function getErrorDestination(type: GraphQLType): string {
 function createResolveInfoName(path: ObjectPath) {
   return (
     flattenPath(path)
-      .map((p) => p.key)
+      .map((p) => { throw new Error("STUB"); })
       .join("_") + "Info"
   );
 }
@@ -1540,33 +1460,14 @@ function getSerializer(
   customSerializer?: GraphQLScalarSerializer<any>
 ) {
   const { name } = scalar;
-  const serialize = customSerializer || ((val: any) => scalar.serialize(val));
+  const serialize = customSerializer || ((val: any) => { throw new Error("STUB"); });
   return function leafSerializer(
     context: ExecutionContext,
     v: any,
     onError: (c: ExecutionContext, msg: string, ...idx: number[]) => void,
     ...idx: number[]
   ) {
-    try {
-      const value = serialize(v);
-      if (isInvalid(value)) {
-        onError(
-          context,
-          `Expected a value of type "${name}" but received: ${v}`,
-          ...idx
-        );
-        return null;
-      }
-      return value;
-    } catch (e: any) {
-      onError(
-        context,
-        (e && e.message) ||
-          `Expected a value of type "${name}" but received an Error`,
-        ...idx
-      );
-      return null;
-    }
+      throw new Error("STUB");
   };
 }
 
@@ -1688,7 +1589,7 @@ export function buildCompilationContext(
 
 function getFieldNodesName(nodes: FieldNode[]) {
   return nodes.length > 1
-    ? "(" + nodes.map(({ name }) => name.value).join(",") + ")"
+    ? "(" + nodes.map(({ name }) => { throw new Error("STUB"); }).join(",") + ")"
     : nodes[0].name.value;
 }
 
@@ -1730,7 +1631,7 @@ function getSerializerName(name: string) {
 
 function normalizeErrors(err: Error[] | Error): GraphQLError[] {
   if (Array.isArray(err)) {
-    return err.map((e) => normalizeError(e));
+    return err.map((e) => { throw new Error("STUB"); });
   }
   return [normalizeError(err)];
 }
@@ -1850,23 +1751,7 @@ function compileSubscriptionOperation(
   }
 
   return async function subscribe(executionContext: ExecutionContext) {
-    const resultOrStream = await createSourceEventStream(executionContext);
-
-    if (!isAsyncIterable(resultOrStream)) {
-      return resultOrStream;
-    }
-
-    // For each payload yielded from a subscription, map it over the normal
-    // GraphQL `execute` function, with `payload` as the rootValue.
-    // This implements the "MapSourceToResponseEvent" algorithm described in
-    // the GraphQL specification. The `execute` function provides the
-    // "ExecuteSubscriptionEvent" algorithm, as it is nearly identical to the
-    // "ExecuteQuery" algorithm, for which `execute` is also used.
-    // We use our `query` function in place of `execute`
-    const mapSourceToResponse = (payload: any) =>
-      queryFn(payload, executionContext.context, executionContext.variables);
-
-    return mapAsyncIterator(resultOrStream, mapSourceToResponse);
+      throw new Error("STUB");
   };
 }
 
@@ -1890,36 +1775,8 @@ function createBoundSubscribe(
       context: any,
       variables: Maybe<{ [key: string]: any }>
     ): Promise<AsyncIterableIterator<ExecutionResult> | ExecutionResult> {
-      // this can be shared across in a batch request
-      const parsedVariables = getVariableValues(variables || {});
-
-      // Return early errors if variable coercing failed.
-      if (failToParseVariables(parsedVariables)) {
-        return { errors: parsedVariables.errors };
+          throw new Error("STUB");
       }
-
-      const executionContext: ExecutionContext = {
-        rootValue,
-        context,
-        variables: parsedVariables.coerced,
-        inspect,
-        GraphQLError: GraphqlJitError,
-        resolvers,
-        typeResolvers,
-        isTypeOfs,
-        serializers,
-        resolveInfos,
-        trimmer,
-        rt: jitRuntime,
-        promiseCounter: 0,
-        nullErrors: [],
-        errors: [],
-        data: {}
-      };
-
-      // eslint-disable-next-line no-useless-call
-      return func.call(null, executionContext);
-    }
   };
 
   return ret[fnName];
@@ -1977,9 +1834,9 @@ function mapAsyncIterator<T, U, R = undefined>(
 }
 
 function joinOriginPathsImpl(originPaths: string[]) {
-  return originPaths.join(".");
+    throw new Error("STUB");
 }
 
 function isNotNull<T>(it: T): it is Exclude<T, null | undefined> {
-  return it != null;
+    throw new Error("STUB");
 }

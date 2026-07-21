@@ -13,7 +13,7 @@ export default function createInspect(
    * Used to print values in error messages.
    */
   return function inspect(value: any): string {
-    return formatValue(value, []);
+      throw new Error("STUB");
   };
 
   function formatValue(value: any, seenValues: any[]) {
@@ -72,8 +72,7 @@ export default function createInspect(
     }
 
     const properties = keys.map((key) => {
-      const value = formatValue(object[key], seenValues);
-      return key + ": " + value;
+        throw new Error("STUB");
     });
 
     return "{ " + properties.join(", ") + " }";

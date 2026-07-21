@@ -59,16 +59,11 @@ export interface TypeExpansion {
 }
 
 function createLeafField<T extends object>(props: T): T & LeafField {
-  return {
-    [LeafFieldSymbol]: true,
-    ...props
-  };
+    throw new Error("STUB");
 }
 
 export function isLeafField(obj: LeafField | FieldExpansion): obj is LeafField {
-  return (
-    obj != null && Object.prototype.hasOwnProperty.call(obj, LeafFieldSymbol)
-  );
+    throw new Error("STUB");
 }
 
 /**
@@ -126,7 +121,7 @@ export function createResolveInfoThunk<T>(
           operation,
           variableValues,`);
   Object.keys(enrichedInfo).forEach((key) => {
-    gen(`${key}: enrichedInfo["${key}"],\n`);
+      throw new Error("STUB");
   });
   gen(`};};`);
   // eslint-disable-next-line
@@ -154,19 +149,7 @@ export function createResolveInfoThunk<T>(
 }
 
 export function fieldExpansionEnricher(input: ResolveInfoEnricherInput) {
-  const { schema, fragments, returnType, fieldNodes } = input;
-  const fieldExpansion: FieldExpansion | LeafField = {};
-
-  for (const fieldNode of fieldNodes) {
-    deepMerge(
-      fieldExpansion,
-      memoizedExpandFieldNode(schema, fragments, fieldNode, returnType)
-    );
-  }
-
-  return {
-    fieldExpansion
-  };
+    throw new Error("STUB");
 }
 
 type FragmentsType = GraphQLResolveInfo["fragments"];
@@ -198,27 +181,7 @@ function expandFieldNode(
   node: FieldNode,
   fieldType: GraphQLOutputType
 ): FieldExpansion | LeafField {
-  if (node.selectionSet == null) {
-    return createLeafField({});
-  }
-
-  // there is a selectionSet which makes the fieldType a CompositeType
-  const typ = memoizedResolveEndType(fieldType) as GraphQLCompositeType;
-  const possibleTypes = memoizedGetPossibleTypes(schema, typ);
-
-  const fieldExpansion: FieldExpansion = {};
-  for (const possibleType of possibleTypes) {
-    if (!isUnionType(possibleType)) {
-      fieldExpansion[possibleType.name] = memoizedExpandFieldNodeType(
-        schema,
-        fragments,
-        possibleType,
-        node.selectionSet
-      );
-    }
-  }
-
-  return fieldExpansion;
+    throw new Error("STUB");
 }
 
 function expandFieldNodeType(
@@ -227,64 +190,7 @@ function expandFieldNodeType(
   parentType: GraphQLCompositeType,
   selectionSet: SelectionSetNode
 ): TypeExpansion {
-  const typeExpansion: TypeExpansion = {};
-
-  for (const selection of selectionSet.selections) {
-    if (selection.kind === Kind.FIELD) {
-      if (
-        !isUnionType(parentType) &&
-        memoizedHasField(parentType, selection.name.value)
-      ) {
-        typeExpansion[selection.name.value] = memoizedExpandFieldNode(
-          schema,
-          fragments,
-          selection,
-          memoizedGetReturnType(parentType, selection.name.value)
-        );
-      }
-    } else {
-      const selectionSet =
-        selection.kind === Kind.INLINE_FRAGMENT
-          ? selection.selectionSet
-          : fragments[selection.name.value].selectionSet;
-
-      const nextType =
-        selection.kind === Kind.INLINE_FRAGMENT
-          ? selection.typeCondition
-            ? (schema.getType(
-                selection.typeCondition.name.value
-              ) as GraphQLCompositeType)
-            : parentType
-          : (schema.getType(
-              fragments[selection.name.value].typeCondition.name.value
-            ) as GraphQLCompositeType);
-
-      /**
-       * nextType (comes from query) is the type extracted from the fragment
-       * parentType (comes from schema) is the possibleType for which we are filling fields
-       *
-       * if the type from query (nextType) is the same as the type we are filling (parentType)
-       * or
-       * if the type from query (nextType) is an abstract type - this case is when we jump
-       * to a super type or sub type. Here we maintain the context (parentType) for which
-       * we are filling the fields. The super type / sub type will be filled in its own
-       * pass.
-       */
-      if (nextType === parentType || isAbstractType(nextType)) {
-        deepMerge(
-          typeExpansion,
-          memoizedExpandFieldNodeType(
-            schema,
-            fragments,
-            parentType,
-            selectionSet
-          )
-        );
-      }
-    }
-  }
-
-  return typeExpansion;
+    throw new Error("STUB");
 }
 
 /**
@@ -346,48 +252,22 @@ function getReturnType(
   parentType: GraphQLObjectLike,
   fieldName: string
 ): GraphQLNamedOutputType {
-  const fields = parentType.getFields();
-  if (!Object.prototype.hasOwnProperty.call(fields, fieldName)) {
-    throw new GraphQLError(
-      `Field "${fieldName}" does not exist in "${parentType.name}"`
-    );
-  }
-
-  const outputType = fields[fieldName].type;
-  return memoizedResolveEndType(outputType);
+    throw new Error("STUB");
 }
 
 /**
  * Resolve to the end type of the Output type unwrapping non-null types and lists
  */
 function resolveEndType(typ: GraphQLOutputType): GraphQLNamedOutputType {
-  if (isListType(typ) || isNonNullType(typ)) {
-    return memoizedResolveEndType(typ.ofType);
-  }
-  return typ;
+    throw new Error("STUB");
 }
 
 function hasField(typ: GraphQLObjectLike, fieldName: string) {
-  return Object.prototype.hasOwnProperty.call(typ.getFields(), fieldName);
+    throw new Error("STUB");
 }
 
 // This is because lodash does not support merging keys
 // which are symbols. We require them for leaf fields
 function deepMerge<TObject, TSource>(obj: TObject, src: TSource) {
-  mergeWith(obj, src, (objValue, srcValue): LeafField | undefined => {
-    if (isLeafField(objValue)) {
-      if (isLeafField(srcValue)) {
-        return {
-          ...objValue,
-          ...srcValue
-        };
-      }
-
-      return objValue;
-    } else if (isLeafField(srcValue)) {
-      return srcValue;
-    }
-
-    return undefined;
-  });
+    throw new Error("STUB");
 }

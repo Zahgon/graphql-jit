@@ -22,16 +22,7 @@ export function schema() {
 
   const BlogAuthor = new GraphQLObjectType({
     name: "Author",
-    fields: () => ({
-      id: { type: GraphQLString },
-      name: { type: GraphQLString },
-      pic: {
-        args: { width: { type: GraphQLInt }, height: { type: GraphQLInt } },
-        type: BlogImage,
-        resolve: (obj, { width, height }) => obj.pic(width, height)
-      },
-      recentArticle: { type: BlogArticle }
-    })
+    fields: () => { throw new Error("STUB"); }
   });
 
   const BlogArticle: GraphQLObjectType = new GraphQLObjectType({
@@ -52,23 +43,12 @@ export function schema() {
       article: {
         type: BlogArticle,
         args: { id: { type: GraphQLID } },
-        resolve: (_, { id }) => article(id)
+        resolve: (_, { id }) => { throw new Error("STUB"); }
       },
       feed: {
         type: new GraphQLList(BlogArticle),
         resolve: () =>
-          Promise.resolve([
-            article(1),
-            article(2),
-            article(3),
-            article(4),
-            article(5),
-            article(6),
-            article(7),
-            article(8),
-            article(9),
-            article(10)
-          ])
+          { throw new Error("STUB"); }
       }
     }
   });
@@ -76,7 +56,7 @@ export function schema() {
   const johnSmith = {
     id: 123,
     name: "John Smith",
-    pic: (width: number, height: number) => getPic(123, width, height),
+    pic: (width: number, height: number) => { throw new Error("STUB"); },
     recentArticle: null
   };
   johnSmith.recentArticle = article(1);
